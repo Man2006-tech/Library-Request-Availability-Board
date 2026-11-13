@@ -24,7 +24,10 @@ Students can search the catalogue, see whether a book is **available, borrowed o
 ## Setup / how to run
 
 No install or build step is needed.
+**Option 1:**
+Live Application on Vercel: https://library-request-availability-board.vercel.app/
 
+**Option 2:**
 1. Download or clone the repository.
 2. Open **`index.html`** in a modern browser (Chrome, Edge, Firefox, Safari) - double-click it.
 3. *(Optional)* serve it locally: `python3 -m http.server 8000` then open <http://localhost:8000>.
