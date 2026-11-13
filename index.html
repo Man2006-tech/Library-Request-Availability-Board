@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Library Request &amp; Availability Board</title>
+  <meta name="description" content="Search the catalogue, check availability, request books, join hold queues, see due dates and renew loans. Demonstration prototype - not connected to a real library system.">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <!-- ===================== HEADER / NAVBAR ===================== -->
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="#home" aria-label="Library Request and Availability Board - Home">
+        <svg class="brand-mark" viewBox="0 0 32 32" width="34" height="34" aria-hidden="true" focusable="false">
+          <rect x="2" y="2" width="28" height="28" rx="6" fill="#c9972b"/>
+          <path d="M8 9h7a3 3 0 0 1 3 3v12a3 3 0 0 0-3-3H8z" fill="#0b2545"/>
+          <path d="M24 9h-7a3 3 0 0 0-3 3v12a3 3 0 0 1 3-3h7z" fill="#fff"/>
+        </svg>
+        <span class="brand-text">
+          <span class="brand-name">Library Board</span>
+          <span class="brand-sub">Request &amp; Availability</span>
+        </span>
+      </a>
+
+      <button class="nav-toggle" id="navToggle" type="button" aria-expanded="false" aria-controls="primaryNav">
+        <span class="nav-toggle-bars" aria-hidden="true"></span>
+        <span class="visually-hidden">Menu</span>
+      </button>
+
+      <nav id="primaryNav" class="primary-nav" aria-label="Primary">
+        <ul>
+          <li><a href="#home" data-route="home">Home</a></li>
+          <li><a href="#browse" data-route="browse">Browse Books</a></li>
+          <li data-role-only="student"><a href="#requests" data-route="requests">My Requests</a></li>
+          <li data-role-only="librarian" hidden><a href="#librarian" data-route="librarian">Librarian</a></li>
+        </ul>
+      </nav>
+
+      <div class="role-switch">
+        <label for="roleSelect">Role</label>
+        <select id="roleSelect" aria-describedby="roleHelp">
+          <option value="student">Student</option>
+          <option value="librarian">Librarian</option>
+        </select>
+        <span id="roleHelp" class="visually-hidden">Simulated role switch for demonstration. This is not real security.</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="demo-banner" role="note">
+    <div class="container">
+      <strong>Demonstration prototype.</strong>
+      Not connected to any real library system. All data is sample data stored in this browser only.
+      <span id="netStatus" class="net-status" hidden>Contacting simulated server&hellip;</span>
+    </div>
+  </div>
+
+  <main id="main" tabindex="-1">
+
+    <!-- ===================== HOME / DASHBOARD ===================== -->
+    <section id="view-home" class="view" aria-labelledby="home-title">
+      <div class="hero">
+        <div class="container hero-inner">
+          <div class="hero-copy">
+            <p class="eyebrow">University Library Portal</p>
+            <h1 id="home-title">Is the book you need available? Find out before you walk over.</h1>
+            <p class="lead">Search the catalogue, see who has a book and when it is due back, join the hold queue, and renew your loans - all in one place.</p>
+            <div class="hero-actions">
+              <a class="btn btn-gold" href="#browse">Browse books</a>
+              <a class="btn btn-outline-light" href="#requests" data-role-only="student">My requests</a>
+              <a class="btn btn-outline-light" href="#librarian" data-role-only="librarian" hidden>Process requests</a>
+            </div>
+          </div>
+          <aside class="hero-card" aria-label="Who this is for">
+            <h2>Who uses this?</h2>
+            <ul>
+              <li><strong>Students</strong> who want to find a book and know whether it is free, when it returns and how many people are waiting.</li>
+              <li><strong>Librarians</strong> who need to approve or reject pending requests and keep the catalogue up to date.</li>
+            </ul>
+          </aside>
+        </div>
+      </div>
+
+      <div class="container">
+        <section class="panel" aria-labelledby="dash-title">
+          <h2 id="dash-title">Dashboard</h2>
+          <dl class="stats">
+            <div class="stat"><dt>Total books</dt><dd id="stat-total">0</dd></div>
+            <div class="stat stat-available"><dt>Available</dt><dd id="stat-available">0</dd></div>
+            <div class="stat stat-borrowed"><dt>Borrowed</dt><dd id="stat-borrowed">0</dd></div>
+            <div class="stat stat-reserved"><dt>Reserved</dt><dd id="stat-reserved">0</dd></div>
+            <div class="stat stat-pending"><dt>Pending requests</dt><dd id="stat-pending">0</dd></div>
+            <div class="stat"><dt>Students waiting</dt><dd id="stat-waiting">0</dd></div>
+          </dl>
+          <div class="avail-bar" id="availBar" role="img" aria-label="Availability breakdown">
+            <span class="seg seg-available" id="seg-available"></span>
+            <span class="seg seg-borrowed" id="seg-borrowed"></span>
+            <span class="seg seg-reserved" id="seg-reserved"></span>
+          </div>
+          <ul class="legend" aria-hidden="true">
+            <li><i class="dot dot-available"></i>Available</li>
+            <li><i class="dot dot-borrowed"></i>Borrowed</li>
+            <li><i class="dot dot-reserved"></i>Reserved</li>
+          </ul>
+        </section>
+
+        <section class="panel" aria-labelledby="how-title">
+          <h2 id="how-title">How it works</h2>
+          <ol class="steps">
+            <li><h3>Search</h3><p>Find books by title, author or category and filter by availability.</p></li>
+            <li><h3>Request or queue</h3><p>Available books can be requested. Unavailable books let you join a first-in, first-out hold queue.</p></li>
+            <li><h3>Librarian decides</h3><p>A librarian approves or rejects each pending request. Approved books get a due date.</p></li>
+            <li><h3>Renew or return</h3><p>Renew eligible loans, or return the book so the next student in the queue is served.</p></li>
+          </ol>
+        </section>
+
+        <section class="panel" aria-labelledby="http-title">
+          <h2 id="http-title">Browser client vs. server (HTTP)</h2>
+          <p>
+            Everything here runs in your browser. Each action sends a <em>simulated</em> HTTP-style request
+            through a Promise with a short <code>setTimeout</code> delay. A real version would send the same
+            request with <code>fetch()</code> to a server, which would check who you are, apply the rules
+            and answer with a status code and JSON.
+          </p>
+          <div class="two-col">
+            <div>
+              <h3>Runs in the browser (this assignment)</h3>
+              <ul class="plain-list">
+                <li>Rendering pages, forms and layout (HTML/CSS)</li>
+                <li>Search filtering, queue and renewal logic (JavaScript)</li>
+                <li>Form validation and error messages</li>
+                <li>Sample data in a JavaScript array (saved in localStorage)</li>
+              </ul>
+            </div>
+            <div>
+              <h3>Would run on a server (later assignments)</h3>
+              <ul class="plain-list">
+                <li>Real authentication and authorization</li>
+                <li>A database holding books, users and requests</li>
+                <li>Enforcing the rules so they cannot be bypassed</li>
+                <li>Integration with a real library system (not claimed here)</li>
+              </ul>
+            </div>
+          </div>
+          <h3>Live request log</h3>
+          <p class="muted small">Newest first. Try searching, requesting or renewing and watch the log.</p>
+          <ol id="httpLog" class="http-log" aria-live="off"></ol>
+          <p id="httpLogEmpty" class="muted small">No requests sent yet.</p>
+        </section>
+      </div>
+    </section>
+
+    <!-- ===================== BROWSE BOOKS ===================== -->
+    <section id="view-browse" class="view" aria-labelledby="browse-title" hidden>
+      <div class="container">
+        <header class="page-head">
+          <h1 id="browse-title">Browse books</h1>
+          <p class="muted">Search by title, author, category or ID. Results come from a simulated search API.</p>
+        </header>
+
+        <form id="searchForm" class="filters" role="search" novalidate>
+          <div class="field grow">
+            <label for="searchInput">Search</label>
+            <input id="searchInput" name="q" type="search" maxlength="60" autocomplete="off"
+                   pattern="[^&lt;&gt;]*" title="Please avoid the characters &lt; and &gt;"
+                   placeholder="e.g. Clean Code, Tanenbaum, Databases" aria-describedby="searchInput-error">
+            <span id="searchInput-error" class="error" aria-live="polite"></span>
+          </div>
+          <div class="field">
+            <label for="categoryFilter">Category</label>
+            <select id="categoryFilter" name="category"><option value="">All categories</option></select>
+          </div>
+          <div class="field">
+            <label for="availabilityFilter">Availability</label>
+            <select id="availabilityFilter" name="availability">
+              <option value="">Any status</option>
+              <option value="available">Available</option>
+              <option value="borrowed">Borrowed</option>
+              <option value="reserved">Reserved</option>
+            </select>
+          </div>
+          <div class="field field-btn">
+            <button type="reset" class="btn btn-ghost" id="clearFilters">Clear</button>
+          </div>
+        </form>
+
+        <p id="resultsStatus" class="results-status" role="status" aria-live="polite">Loading catalogue&hellip;</p>
+        <ul id="bookGrid" class="book-grid" aria-busy="false"></ul>
+        <div id="emptyState" class="empty" hidden>
+          <h2>No books match your search</h2>
+          <p>Check the spelling, try fewer words, or clear the filters.</p>
+          <button type="button" class="btn btn-primary" id="emptyClear">Clear search and filters</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== MY REQUESTS (student) ===================== -->
+    <section id="view-requests" class="view" aria-labelledby="requests-title" hidden>
+      <div class="container">
+        <header class="page-head">
+          <h1 id="requests-title">My requests</h1>
+          <p class="muted">Signed in as <strong id="whoName">Student</strong>. Request a book, track your hold queue positions and manage your loans.</p>
+        </header>
+
+        <div class="two-col two-col-forms">
+          <section class="panel" aria-labelledby="reqform-title">
+            <h2 id="reqform-title">Request a book</h2>
+            <form id="requestForm" novalidate>
+              <div class="field">
+                <label for="reqBook">Book <span class="req" aria-hidden="true">*</span></label>
+                <select id="reqBook" name="book" required aria-describedby="reqBook-error"></select>
+                <span id="reqBook-error" class="error" aria-live="polite"></span>
+              </div>
+              <div class="field">
+                <label for="reqPickup">Preferred pick-up date <span class="req" aria-hidden="true">*</span></label>
+                <input id="reqPickup" name="pickup" type="date" required aria-describedby="reqPickup-hint reqPickup-error">
+                <span id="reqPickup-hint" class="hint">Within the next 7 days. Used once the book is ready for you.</span>
+                <span id="reqPickup-error" class="error" aria-live="polite"></span>
+              </div>
+              <div class="field">
+                <label for="reqNote">Note to librarian (optional)</label>
+                <textarea id="reqNote" name="note" rows="3" maxlength="140" aria-describedby="reqNote-hint reqNote-error"></textarea>
+                <span id="reqNote-hint" class="hint"><span id="reqNoteCount">0</span>/140 characters</span>
+                <span id="reqNote-error" class="error" aria-live="polite"></span>
+              </div>
+              <p class="hint">Available books are requested. Books that are borrowed or reserved add you to the hold queue.</p>
+              <button type="submit" class="btn btn-primary">Submit request</button>
+            </form>
+          </section>
+
+          <section class="panel" aria-labelledby="profile-title">
+            <h2 id="profile-title">Student details</h2>
+            <form id="profileForm" novalidate>
+              <div class="field">
+                <label for="profName">Full name <span class="req" aria-hidden="true">*</span></label>
+                <input id="profName" name="name" type="text" required minlength="3" maxlength="50" autocomplete="name" aria-describedby="profName-error">
+                <span id="profName-error" class="error" aria-live="polite"></span>
+              </div>
+              <div class="field">
+                <label for="profId">Student ID <span class="req" aria-hidden="true">*</span></label>
+                <input id="profId" name="studentId" type="text" required pattern="[A-Za-z]{2,6}-[0-9]{3,6}"
+                       title="Letters, a hyphen, then digits - for example CS-12345" autocomplete="off" aria-describedby="profId-hint profId-error">
+                <span id="profId-hint" class="hint">Format: letters-digits, e.g. CS-12345</span>
+                <span id="profId-error" class="error" aria-live="polite"></span>
+              </div>
+              <div class="field">
+                <label for="profEmail">University email <span class="req" aria-hidden="true">*</span></label>
+                <input id="profEmail" name="email" type="email" required autocomplete="email" aria-describedby="profEmail-error">
+                <span id="profEmail-error" class="error" aria-live="polite"></span>
+              </div>
+              <button type="submit" class="btn btn-secondary">Save details</button>
+            </form>
+          </section>
+        </div>
+
+        <section class="panel" aria-labelledby="borrowed-title">
+          <h2 id="borrowed-title">My borrowed books</h2>
+          <p class="muted small">Loans last <span data-const="loan">14</span> days. Each book can be renewed up to <span data-const="renew">2</span> times by 7 days, unless it is overdue or other students are waiting.</p>
+          <div class="table-wrap" id="borrowedWrap"></div>
+        </section>
+
+        <section class="panel" aria-labelledby="queue-title">
+          <h2 id="queue-title">Hold queues</h2>
+          <p class="muted small">Queues are first-in, first-out. Other students are shown anonymously.</p>
+          <div id="queueWrap"></div>
+        </section>
+
+        <section class="panel" aria-labelledby="history-title">
+          <h2 id="history-title">My request history</h2>
+          <div class="table-wrap" id="historyWrap"></div>
+        </section>
+      </div>
+    </section>
+
+    <!-- ===================== LIBRARIAN PANEL ===================== -->
+    <section id="view-librarian" class="view" aria-labelledby="lib-title" hidden>
+      <div class="container">
+        <header class="page-head">
+          <h1 id="lib-title">Librarian panel</h1>
+          <p class="muted">Process pending requests and maintain the catalogue. Role-based UI only - real authorization would be enforced by a server.</p>
+        </header>
+
+        <section class="panel" aria-labelledby="pending-title">
+          <h2 id="pending-title">Pending requests <span class="count-pill" id="pendingCount">0</span></h2>
+          <div class="table-wrap" id="pendingWrap"></div>
+        </section>
+
+        <section class="panel" aria-labelledby="processed-title">
+          <h2 id="processed-title">Recently processed</h2>
+          <div class="table-wrap" id="processedWrap"></div>
+        </section>
+
+        <div class="two-col two-col-forms">
+          <section class="panel" aria-labelledby="bookform-title">
+            <h2 id="bookform-title">Add a book</h2>
+            <form id="bookForm" novalidate>
+              <div class="field">
+                <label for="bookTitle">Title <span class="req" aria-hidden="true">*</span></label>
+                <input id="bookTitle" name="title" type="text" required minlength="2" maxlength="80" aria-describedby="bookTitle-error">
+                <span id="bookTitle-error" class="error" aria-live="polite"></span>
+              </div>
+              <div class="field">
+                <label for="bookAuthor">Author <span class="req" aria-hidden="true">*</span></label>
+                <input id="bookAuthor" name="author" type="text" required minlength="2" maxlength="60" aria-describedby="bookAuthor-error">
+                <span id="bookAuthor-error" class="error" aria-live="polite"></span>
+              </div>
+              <div class="field">
+                <label for="bookCategory">Category <span class="req" aria-hidden="true">*</span></label>
+                <select id="bookCategory" name="category" required aria-describedby="bookCategory-error">
+                  <option value="">Choose a category</option>
+                </select>
+                <span id="bookCategory-error" class="error" aria-live="polite"></span>
+              </div>
+              <div class="form-actions">
+                <button type="submit" class="btn btn-primary" id="bookSubmit">Add book</button>
+                <button type="button" class="btn btn-ghost" id="bookCancel" hidden>Cancel edit</button>
+              </div>
+            </form>
+          </section>
+
+          <section class="panel" aria-labelledby="inventory-title">
+            <h2 id="inventory-title">Catalogue records</h2>
+            <p class="muted small">Create, read, update and delete book records. A book that is on loan or reserved cannot be deleted.</p>
+            <div class="table-wrap" id="inventoryWrap"></div>
+          </section>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <p>Assignment 1 &middot; Idea #14 &middot; Library Request &amp; Availability Board. Client-side only (HTML, CSS, vanilla JavaScript). Not connected to a real library system.</p>
+      <button type="button" class="btn btn-ghost-light" id="resetData">Reset sample data</button>
+    </div>
+  </footer>
+
+  <!-- Toast notifications (announced to screen readers) -->
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+
+  <!-- Reject dialog (form with validation) -->
+  <dialog id="rejectDialog" aria-labelledby="rejectTitle">
+    <form id="rejectForm" method="dialog" novalidate>
+      <h2 id="rejectTitle">Reject request</h2>
+      <p id="rejectSummary" class="muted"></p>
+      <div class="field">
+        <label for="rejectReason">Reason (shown to the student) <span class="req" aria-hidden="true">*</span></label>
+        <textarea id="rejectReason" rows="3" required minlength="5" maxlength="140" aria-describedby="rejectReason-error"></textarea>
+        <span id="rejectReason-error" class="error" aria-live="polite"></span>
+      </div>
+      <div class="form-actions">
+        <button type="submit" class="btn btn-danger" id="rejectConfirm" value="confirm">Reject request</button>
+        <button type="button" class="btn btn-ghost" id="rejectCancel">Cancel</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
