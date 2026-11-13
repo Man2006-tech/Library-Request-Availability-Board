@@ -28,7 +28,8 @@ No install or build step is needed.
 1. Download or clone the repository.
 2. Open **`index.html`** in a modern browser (Chrome, Edge, Firefox, Safari) - double-click it.
 3. *(Optional)* serve it locally: `python3 -m http.server 8000` then open <http://localhost:8000>.
-4. *(Optional)* GitHub Pages: repository **Settings -> Pages -> Deploy from branch -> main / root**.
+4. *(Optional)* serve it locally: Use `npx serve instead` (needs Node.js) then open <http://localhost:3000>.
+5. *(Optional)* GitHub Pages: repository **Settings -> Pages -> Deploy from branch -> main / root**.
 
 Use the **Role** dropdown (top right) to switch between Student and Librarian. The footer button **Reset sample data** restores the original records.
 
@@ -95,11 +96,29 @@ More: `screenshots/desktop-home.png`, `screenshots/mobile-home.png`, `screenshot
 - Role switching is **not real security**; a server must enforce authorization in a later assignment.
 - No real library integration is implied or claimed.
 
-## AI assistance and attribution
+## AI Assistance and Attribution
 
-Claude (Anthropic) was used to help generate and review this code and documentation. The author reviewed and tested the work and can explain and modify it. **Edit this section so it matches exactly how you used AI, as the course requires.**
-No third-party code, frameworks, images or fonts were used; icons are hand-written inline SVG. Book titles/authors are real textbooks used only as sample data.
+AI tools (ChatGPT by OpenAI and Claude by Anthropic) were used to assist with code generation, debugging, reviewing functionality, and preparing project documentation. The project author reviewed the implementation, tested the application, and remains responsible for the submitted work.
 
-## Testing summary
+No third-party templates, frameworks, libraries, images, or fonts were used. All icons are created using hand-written inline SVG. Book titles and author names are used as sample catalogue data for demonstration purposes only.
 
-Tested: search/filter/empty states, invalid input, request, queue join/leave, FIFO promotion, renewal rules, overdue handling, approve/reject, add/edit/delete (and delete-blocking), role restrictions, keyboard use, and layouts at ~390px, ~820px and ~1280px widths.
+## Testing Summary
+
+The application was tested across its main features and different screen sizes to verify functionality, usability, and input handling.
+
+**Functional testing included:**
+- Book catalog search by title, author, category, and ID.
+- Availability and category filtering.
+- Empty search results and invalid input handling.
+- Book request submission and hold queue joining/leaving.
+- FIFO queue processing and automatic request promotion.
+- Book renewal eligibility, due-date updates, and overdue restrictions.
+- Librarian approval and rejection of requests.
+- Adding, editing, and deleting catalogue records.
+- Preventing deletion when a book has active dependencies.
+- Role-based interface restrictions.
+- Keyboard navigation and basic accessibility checks.
+
+**Responsive testing:** The application was checked at approximately 390px (mobile), 820px (tablet), and 1280px (desktop) screen widths to verify that the layout adapts appropriately across devices.
+
+**Testing environment:** Modern desktop and mobile browsers.
