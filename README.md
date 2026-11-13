@@ -28,7 +28,7 @@ No install or build step is needed.
 1. Download or clone the repository.
 2. Open **`index.html`** in a modern browser (Chrome, Edge, Firefox, Safari) - double-click it.
 3. *(Optional)* serve it locally: `python3 -m http.server 8000` then open <http://localhost:8000>.
-4. *(Optional)* serve it locally: Use `npx serve instead` (needs Node.js) then open <http://localhost:3000>.
+4. *(Optional)* serve it locally: Use `npx serve` instead (needs Node.js) then open <http://localhost:3000>.
 5. *(Optional)* GitHub Pages: repository **Settings -> Pages -> Deploy from branch -> main / root**.
 
 Use the **Role** dropdown (top right) to switch between Student and Librarian. The footer button **Reset sample data** restores the original records.
@@ -98,7 +98,7 @@ More: `screenshots/desktop-home.png`, `screenshots/mobile-home.png`, `screenshot
 
 ## AI Assistance and Attribution
 
-AI tools (ChatGPT by OpenAI and Claude by Anthropic) were used to assist with code generation, debugging, reviewing functionality, and preparing project documentation. The project author reviewed the implementation, tested the application, and remains responsible for the submitted work.
+AI tools (Claude by Anthropic) were used to assist with code generation, debugging. The project author reviewed the implementation, tested the application and prepared assignment documentation.
 
 No third-party templates, frameworks, libraries, images, or fonts were used. All icons are created using hand-written inline SVG. Book titles and author names are used as sample catalogue data for demonstration purposes only.
 
